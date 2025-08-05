@@ -35,16 +35,16 @@ namespace RobotWalkerTests
         [Fact]
         public void Robot_MoveForward_UpdatesPositionCorrectly()
         {
-            var robot = new Robot(1, 1, Direction.N, 5, 5);
+            var robot = new Robot(1, 1, Direction.S, 5, 5);
             robot.MoveForward();
 
-            Assert.Equal("1 2 N", robot.ToString());
+            Assert.Equal("1 2 S", robot.ToString());
         }
 
         [Fact]
         public void Robot_MoveForward_OutOfBounds_ThrowsException()
         {
-            var robot = new Robot(0, 0, Direction.S, 5, 5);
+            var robot = new Robot(0, 0, Direction.N, 5, 5);
 
             var ex = Assert.Throws<InvalidOperationException>(() => robot.MoveForward());
 

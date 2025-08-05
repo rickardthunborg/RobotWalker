@@ -47,6 +47,10 @@ namespace RobotWalker
         public void ProcessCommands(string commands)
         {
             if(commands == "exit".ToLower())
+            {
+                Console.WriteLine("Exiting the robot control.");
+                return;
+            }
             foreach (char command in commands)
             {
                 switch (command)
