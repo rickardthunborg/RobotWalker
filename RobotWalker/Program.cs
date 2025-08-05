@@ -13,6 +13,6 @@ while (true)
 {
     Console.WriteLine("Enter commands (L, R, F) or 'exit' to quit:");
     robot.ProcessCommands(Console.ReadLine());
-    Console.WriteLine(robot.ToString());
+    Console.WriteLine("Report: " + robot.ToString());
 }
 

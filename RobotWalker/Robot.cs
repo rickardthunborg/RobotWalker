@@ -46,6 +46,7 @@ namespace RobotWalker
 
         public void ProcessCommands(string commands)
         {
+            if(commands == "exit".ToLower())
             foreach (char command in commands)
             {
                 switch (command)
