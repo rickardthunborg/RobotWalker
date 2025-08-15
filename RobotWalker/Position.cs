@@ -1,26 +1,30 @@
-﻿using System;
+﻿using RobotWalker;
+using System;
 
+
+public enum Direction { N, E, S, W }
 public class Position
 {
 	public int X { get; set; }
 	public int Y { get; set; }
+    public Direction Direction { get; set; }
 
-    public Position(int x, int y)
-	{
-		X = x;
-		Y = y;
-	}
 
-	public void Move(int dx, int dy)
+    public Position(int x = 1, int y = 1, Direction facing = Direction.N)
     {
-        X += dx;
-        Y += dy;
+        X = x;
+        Y = y;
+        Direction = facing;
     }
-
-	public bool IsOutOfBounds(int width, int height)
-	{
-		return X < 0 || X >= width || Y < 0 || Y >= height;
+    public Position NextPosition()
+    {
+        return Direction switch
+        {
+            Direction.N => new Position(X, Y + 1, Direction),
+            Direction.S => new Position(X, Y - 1, Direction),
+            Direction.E => new Position(X + 1, Y, Direction),
+            Direction.W => new Position(X - 1, Y, Direction),
+            _ => throw new InvalidOperationException("Invalid direction")
+        };
     }
-
-	public override string ToString() => $"({X}, {Y})";
 }
