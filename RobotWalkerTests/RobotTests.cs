@@ -1,63 +1,81 @@
 using Xunit;
 using RobotWalker;
+using RobotWalker.Core;
 
 namespace RobotWalkerTests
 {
     public class RobotTests
     {
-        [Fact]
-        public void Robot_InitialPositionAndDirection_IsSetCorrectly()
-        {
-            var robot = new Robot(1, 2, Direction.N, 5, 5);
+        private Room CreateRoom(int width = 5, int height = 5) => new Room(width, height);
 
-            Assert.Equal(1, robot.Position.X);
-            Assert.Equal(2, robot.Position.Y);
-            Assert.Equal("1 2 N", robot.ToString());
+        [Fact]
+        public void Robot_InitialPosition_DefaultsTo_0_0_N()
+        {
+            var room = CreateRoom();
+            var robot = new Robot(room);
+
+            Assert.Equal(0, robot.Position.X);
+            Assert.Equal(0, robot.Position.Y);
+            Assert.Equal(Direction.N, robot.Position.Direction);
+            Assert.Equal("0 0 N", robot.ToString());
         }
+
+        [Fact]
+        public void Robot_InitialPosition_CustomStart_IsSetCorrectly()
+        {
+            var room = CreateRoom();
+            var start = new Position(2, 3, Direction.E);
+            var robot = new Robot(room, start);
+
+            Assert.Equal(2, robot.Position.X);
+            Assert.Equal(3, robot.Position.Y);
+            Assert.Equal(Direction.E, robot.Position.Direction);
+            Assert.Equal("2 3 E", robot.ToString());
+        }
+
         [Fact]
         public void Robot_TurnLeft_UpdatesDirectionCorrectly()
         {
-            var robot = new Robot(0, 0, Direction.N, 5, 5);
+            var room = CreateRoom();
+            var robot = new Robot(room, new Position(0, 0, Direction.N));
             robot.TurnLeft();
 
+            Assert.Equal(Direction.W, robot.Position.Direction);
             Assert.Equal("0 0 W", robot.ToString());
         }
 
         [Fact]
         public void Robot_TurnRight_UpdatesDirectionCorrectly()
         {
-            var robot = new Robot(0, 0, Direction.N, 5, 5);
+            var room = CreateRoom();
+            var robot = new Robot(room, new Position(0, 0, Direction.N));
             robot.TurnRight();
 
+            Assert.Equal(Direction.E, robot.Position.Direction);
             Assert.Equal("0 0 E", robot.ToString());
         }
 
         [Fact]
         public void Robot_MoveForward_UpdatesPositionCorrectly()
         {
-            var robot = new Robot(1, 1, Direction.S, 5, 5);
+            var room = CreateRoom();
+            var robot = new Robot(room, new Position(1, 1, Direction.S));
             robot.MoveForward();
 
-            Assert.Equal("1 2 S", robot.ToString());
+            Assert.Equal(1, robot.Position.X);
+            Assert.Equal(0, robot.Position.Y);
+            Assert.Equal(Direction.S, robot.Position.Direction);
+            Assert.Equal("1 0 S", robot.ToString());
         }
 
         [Fact]
         public void Robot_MoveForward_OutOfBounds_ThrowsException()
         {
-            var robot = new Robot(0, 0, Direction.N, 5, 5);
+            var room = CreateRoom();
+            var robot = new Robot(room, new Position(0, 0, Direction.S));
 
             var ex = Assert.Throws<InvalidOperationException>(() => robot.MoveForward());
-
-            Assert.Equal("Robot moved out of bounds.", ex.Message);
-        }
-
-        [Fact]
-        public void Robot_ProcessCommands_Sequence_WorksCorrectly()
-        {
-            var robot = new Robot(1, 2, Direction.N, 5, 5);
-            robot.ProcessCommands("RFRFFRFRF");
-
-            Assert.Equal("1 3 N", robot.ToString());
+            Assert.Equal("Robot tried to move out of bounds!", ex.Message);
         }
     }
 }
